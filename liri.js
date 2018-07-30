@@ -3,9 +3,10 @@ var Twitter = require("twitter")
 var Spotify = require("node-spotify-api")
 // var omdb = require('omdb');
 var request = require("request");
+var fs = require("fs");
 var keys = require("./keys.js");
 
-something(action, argument)
+// something(action, argument)
 
 var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
@@ -13,7 +14,7 @@ var client = new Twitter(keys.twitter);
 var argument = "";
 var action = process.argv[2];
 var songTitle = process.argv[3];
-var movieName = process.argv[4];
+var movieName = process.argv[3];
 
 switch (action) {
     case "my-tweets":
@@ -26,7 +27,7 @@ switch (action) {
         break;
     case "movie-this":
         getMovie();
-        if (movieTitle === "") {
+        if (movieName === "") {
             getMovie("Mr. Nobody");
 
         } else {
@@ -81,7 +82,7 @@ function getTheSong() {
     });
 }
 
-function getMovie() {
+function getMovie(movieName) {
     // Then run a request to the OMDB API with the movie specified
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
@@ -109,60 +110,23 @@ function getMovie() {
 
 }
 
-// function getMovie(movieName) {
-
-//     // Runs a request to the OMDB API with the movie specified.
-//     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
-
-//     request(queryUrl, function (error, response, body) {
-//         // If the request is successful...
-//         if (!error && response.statusCode === 200) {
-
-//             // Parses the body of the site and recovers movie info.
-//             var movie = JSON.parse(body);
-
-//             // Prints out movie info.
-//             logOutput("Movie Title: " + movie.Title);
-//             logOutput("Release Year: " + movie.Year);
-//             logOutput("IMDB Rating: " + movie.imdbRating);
-//             logOutput("Country Produced In: " + movie.Country);
-//             logOutput("Language: " + movie.Language);
-//             logOutput("Plot: " + movie.Plot);
-//             logOutput("Actors: " + movie.Actors);
-
-//             // Had to set to array value, as there seems to be a bug in API response,
-//             // that always returns N/A for movie.tomatoRating.
-//             logOutput("Rotten Tomatoes Rating: " + movie.Ratings[2].Value);
-//             logOutput("Rotten Tomatoes URL: " + movie.tomatoURL);
-//         }
-//     });
-// }
-// function logOutput(logText) {
-//     log.info(logText);
-//     console.log(logText);
-// }
-
-
-
-
-
-
-
-
 function doWhatItSays() {
-
-    fs.readFile('./random.txt', "utf8", function read(err, data) {
+    fs.readFile("random.txt", "utf8", function (err, data) {
         if (err) {
-            throw err;
+            results = data.split(",");
+            getTheSong(results[2], results[3]);
         } else {
-            var ranArray = data.split(",")
-            action = ranArray[0];
-            argument = ranArray[1];
-            something(action, argument);
+            console.log("oooooooooops" + err)
         }
-        content = data;
+    })
+}
 
-        // Invoke the next step here however you like
-        console.log(content);
-    });
+function log(logResults) {
+    function log(logResults) {
+        fs.appendFile("log.txt", logResults, (err) => {
+            if (err) {
+                throw err;
+            }
+        })
+    }
 }
